@@ -80,6 +80,22 @@ class JsConverter
             $deep = true;
         } while (!empty($replacedStringsList));
 
+        // Is the first character of the string not the beginning of the object?
+        if ($convertedString[0] !== '{') {
+            // Remove the variable name and creation and any other characters before the object.
+            $convertedString = explode('{', $convertedString);
+            array_shift($convertedString);
+            $convertedString = '{' . implode('{', $convertedString);
+        }
+
+        // Is the last character of the string not the end of the object?
+        if ($convertedString[-1] !== '}') {
+            // Remove the ";" and any other characters after the object.
+            $convertedString = explode('}', $convertedString);
+            array_pop($convertedString);
+            $convertedString = implode('}', $convertedString) . '}';
+        }
+        
         return preg_replace('/:(")(true|false|null)(")/', ':$2', $convertedString);
     }
 
